@@ -2,41 +2,32 @@ package com.example.kimcoach
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Movie
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Looper
-import android.telephony.CarrierConfigManager
-import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.example.kimcoach.common.Constants
 import com.example.kimcoach.databinding.ActivityMainBinding
 import com.example.kimcoach.room.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.wearable.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.lang.Exception
-import java.util.*
 
 
-class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedListener {
+class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private val REQUEST_CODE_PERMISSION = 1001
     private lateinit var db: SensorDataBase
@@ -47,7 +38,6 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
     private var gyroList: List<GyroEntity>? = null
     private var heartBeatList: List<HeartBeatEntity>? = null
     private var gpsList: List<GpsEntity>? = null
-    private var datapath = "/data_path"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private val REQUIRED_PERMISSIONS = arrayOf(
@@ -93,17 +83,29 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
                 gpsList = dao.getAllGpsData()
 
             }
-            exportDatabaseToCSVFile()
+            exportDatabaseToCSVFile(Constants.ACC_TYPE_NAME)
+            exportDatabaseToCSVFile(Constants.GYRO_TYPE_NAME)
+            exportDatabaseToCSVFile(Constants.HEART_TYPE_NAME)
+            exportDatabaseToCSVFile(Constants.GPS_TYPE_NAME)
+
             //send DB to mobile
         }
     }
 
-    private fun getCSVFileName(): String = "SensorData.csv"
+    private fun getCSVFileName(type:String): String {
+        return when(type){
+             Constants.ACC_TYPE_NAME-> Constants.ACC_FILE_NAME
+             Constants.GYRO_TYPE_NAME-> Constants.GYRO_FILE_NAME
+             Constants.HEART_TYPE_NAME -> Constants.HEART_FILE_NAME
+            else-> Constants.GPS_FILE_NAME
+        }
 
-    private fun exportDatabaseToCSVFile() {
-        val csvFile = generateFile(this, getCSVFileName())
+    }
+
+    private fun exportDatabaseToCSVFile(type: String) {
+        val csvFile = generateFile(this, getCSVFileName(type))
         if (csvFile != null) {
-            exportSensroDataToCsv(csvFile)
+            exportSensorDataToCsv(csvFile,type)
             Toast.makeText(this, "CSV 파일 생성 성공", Toast.LENGTH_LONG).show()
 
             try {
@@ -117,7 +119,7 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
         }
     }
 
-    fun generateFile(context: Context, fileName: String): File? {
+    private fun generateFile(context: Context, fileName: String): File? {
         val csvFile = File(context.filesDir, fileName)
         csvFile.createNewFile()
 
@@ -128,7 +130,7 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
         }
     }
 
-    fun goToFileIntent(context: Context, file: File): Intent {
+    private fun goToFileIntent(context: Context, file: File): Intent {
         val intent = Intent(Intent.ACTION_VIEW)
         val contentUri =
             FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
@@ -140,26 +142,35 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
         return intent
     }
 
-    fun exportSensroDataToCsv(csvFile: File) {
+    private fun exportSensorDataToCsv(csvFile: File, type: String) {
         csvWriter().open(csvFile, append = false) {
             // Header
-            writeRow(listOf("ACC [id]", "[Time]", "[X]", "[Y]", "[Z]"))
-            accList?.forEachIndexed { index, data ->
-                writeRow(listOf(index, data.timestamp, data.x, data.y, data.z))
-            }
-            writeRow(listOf("GYRO [id]", "[Time]", "[X]", "[Y]", "[Z]"))
-            gyroList?.forEachIndexed{index, gyroEntity ->
-                writeRow(listOf(index, gyroEntity.timestamp, gyroEntity.x, gyroEntity.y, gyroEntity.z))
-            }
+            when(type){
+                Constants.ACC_TYPE_NAME->{
+                    writeRow(listOf("ACC [id]", "[Time]", "[X]", "[Y]", "[Z]"))
+                    accList?.forEachIndexed { index, data ->
+                        writeRow(listOf(index, data.timestamp, data.x, data.y, data.z))
+                    }
+                }
+                Constants.GYRO_TYPE_NAME->{
+                    writeRow(listOf("GYRO [id]", "[Time]", "[X]", "[Y]", "[Z]"))
+                    gyroList?.forEachIndexed{index, gyroEntity ->
+                        writeRow(listOf(index, gyroEntity.timestamp, gyroEntity.x, gyroEntity.y, gyroEntity.z))
+                    }
+                }
+                Constants.HEART_TYPE_NAME->{
+                    writeRow(listOf("HeartBeat [id]", "[Time]", "Beat"))
+                    heartBeatList?.forEachIndexed { index, heartBeatEntity ->
+                        writeRow(listOf(index, heartBeatEntity.timestamp, heartBeatEntity.beat))
+                    }
+                }
 
-            writeRow(listOf("GPS [id]", "[Time]", "[X]", "[Y]"))
-            gpsList?.forEachIndexed { index, gpsEntity ->
-                writeRow(listOf(index, gpsEntity.timestamp, gpsEntity.latitude, gpsEntity.longitude))
-            }
-
-            writeRow(listOf("HeartBeat [id]", "[Time]", "Beat"))
-            heartBeatList?.forEachIndexed { index, heartBeatEntity ->
-                writeRow(listOf(index, heartBeatEntity.timestamp, heartBeatEntity.beat))
+                Constants.GPS_TYPE_NAME->{
+                    writeRow(listOf("GPS [id]", "[Time]", "[X]", "[Y]"))
+                    gpsList?.forEachIndexed { index, gpsEntity ->
+                        writeRow(listOf(index, gpsEntity.timestamp, gpsEntity.latitude, gpsEntity.longitude))
+                    }
+                }
             }
         }
     }
@@ -180,11 +191,8 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
         ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSION)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -209,7 +217,7 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.priority = Priority.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 2 * 1000
 
         locationCallback = object : LocationCallback() {
@@ -220,17 +228,8 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
                 for (location in locationResult.locations) {
                     if (location != null) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            dao.insertGps(
-                                GpsEntity(
-                                    0,
-                                    System.currentTimeMillis().toString(),
-                                    location.latitude,
-                                    location.longitude
-                                )
-                            )
+                            dao.insertGps(GpsEntity(0, System.currentTimeMillis().toString(), location.latitude, location.longitude))
                         }
-
-                        Log.d("Test", "GPS Location changed, Latitude")
                     }
                 }
             }
@@ -241,7 +240,6 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
             Looper.getMainLooper()
         );
 
-
     }
 
     private fun registerSensor() {
@@ -249,30 +247,15 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
         checkPermission()
         registerGps()
         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
-            sensorManager.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
-            )
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
         sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.also {
-            sensorManager.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
-            )
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
         sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)?.also {
-            sensorManager.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
-            )
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
     }
@@ -280,42 +263,19 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_GYROSCOPE) {
             CoroutineScope(Dispatchers.IO).launch {
-                dao.insertGyro(
-                    GyroEntity(
-                        0,
-                        System.currentTimeMillis().toString(),
-                        event.values[0].toDouble(),
-                        event.values[1].toDouble(),
-                        event.values[2].toDouble()
-                    )
-                )
-
+                dao.insertGyro(GyroEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble()))
             }
         }
 
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             CoroutineScope(Dispatchers.IO).launch {
-                dao.insertAccelerator(
-                    AcceleratorEntity(
-                        0,
-                        System.currentTimeMillis().toString(),
-                        event.values[0].toDouble(),
-                        event.values[1].toDouble(),
-                        event.values[2].toDouble()
-                    )
-                )
+                dao.insertAccelerator(AcceleratorEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble()))
             }
         }
 
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
             CoroutineScope(Dispatchers.IO).launch {
-                dao.insertHeartBeat(
-                    HeartBeatEntity(
-                        0,
-                        System.currentTimeMillis().toString(),
-                        event.values[0].toInt()
-                    )
-                )
+                dao.insertHeartBeat(HeartBeatEntity(0, System.currentTimeMillis().toString(), event.values[0].toInt()))
             }
         }
     }
@@ -328,63 +288,6 @@ class MainActivity : Activity(), SensorEventListener, DataClient.OnDataChangedLi
         sensorManager.unregisterListener(this)
         super.onDestroy()
     }
-
-    override fun onResume() {
-        super.onResume()
-        Wearable.getDataClient(this).addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Wearable.getDataClient(this).removeListener(this)
-    }
-
-
-    private fun hasGps(): Boolean =
-        packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)
-
-    override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
-        Log.d(TAG, "onDataChanged: $dataEventBuffer")
-        for (event in dataEventBuffer) {
-            if (event.type == DataEvent.TYPE_CHANGED) {
-                val path = event.dataItem.uri.path
-                if (datapath == path) {
-                    val dataMapItem = DataMapItem.fromDataItem(event.dataItem)
-                    val message = dataMapItem.dataMap.getString("message")
-                    Log.v(TAG, "Wear activity received message: $message")
-
-                } else {
-                    Log.e(TAG, "Unrecognized path: $path")
-                }
-            } else if (event.type == DataEvent.TYPE_DELETED) {
-                Log.v(TAG, "Data deleted : " + event.dataItem.toString())
-            } else {
-                Log.e(TAG, "Unknown data event Type = " + event.type)
-            }
-        }
-    }
-
-    private fun sendData(message: String) {
-        val dataMap = PutDataMapRequest.create(datapath)
-        dataMap.dataMap.putString("message", message)
-        val request = dataMap.asPutDataRequest()
-        request.setUrgent()
-        val dataItemTask: Task<DataItem> = Wearable.getDataClient(this).putDataItem(request)
-        dataItemTask
-            .addOnSuccessListener(OnSuccessListener<DataItem> { dataItem ->
-                Log.d(
-                    TAG,
-                    "Sending message was successful: $dataItem"
-                )
-            })
-            .addOnFailureListener(OnFailureListener { e ->
-                Log.e(
-                    TAG,
-                    "Sending message failed: $e"
-                )
-            })
-    }
-
 
 }
 
