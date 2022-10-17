@@ -13,4 +13,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "KimCoach"
-include ':app'
+include ':wear'
+include ':mobile'
