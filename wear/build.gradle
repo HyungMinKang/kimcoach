@@ -35,6 +35,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.wear:wear:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    wearApp project(":wear")
     implementation "androidx.activity:activity-ktx:1.4.0"
     implementation 'com.google.android.gms:play-services-location:20.0.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'
@@ -49,5 +51,10 @@ dependencies {
     //Viewbinding
     implementation'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
 
+    //csv library
     implementation "com.github.doyaaaaaken:kotlin-csv-jvm:0.9.0"
+
+    // Glide
+    implementation "com.github.bumptech.glide:glide:4.13.0"
+    kapt "com.github.bumptech.glide:compiler:4.13.0"
 }

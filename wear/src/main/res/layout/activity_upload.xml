@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/box_inset_layout_padding"
+    android:id="@+id/layout"
+    android:background="@drawable/upload"
+    tools:context=".ui.UploadActivity"
+    tools:deviceIds="wear">
+
+
+    <Button
+        android:layout_marginBottom="40dp"
+        android:paddingHorizontal="20dp"
+        android:layout_width="wrap_content"
+        android:background="@drawable/btn_radius_black"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/btn_upload_sensor"
+        android:text="업로드하기"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

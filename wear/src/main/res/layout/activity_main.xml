@@ -1,40 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/locker"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".MainActivity"
+    tools:context=".ui.MainActivity"
     tools:deviceIds="wear">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="30dp"
-        app:boxedEdges="all">
+    <Button
+        android:id="@+id/btn_start_sensor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="20dp"
+        android:textSize="12sp"
+        android:background="@drawable/btn_radius_black"
+        android:layout_marginHorizontal="50dp"
+        android:paddingHorizontal="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="경기 시작" />
 
+    <ProgressBar
+        android:layout_width="200dp"
+        android:minHeight="90dp"
+        android:visibility="gone"
+        android:layout_height="120dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:id="@+id/pg_main" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_main_loading"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/pg_main"
+        android:text="Waiting for Setting"
+        android:textSize="15sp"
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_start_sensor"
-            android:text="Start"
-            />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_stop_sensor"
-            android:enabled="false"
-            android:text="Stop"
-            />
-
-
-
-
-    </LinearLayout>
-</androidx.wear.widget.BoxInsetLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
