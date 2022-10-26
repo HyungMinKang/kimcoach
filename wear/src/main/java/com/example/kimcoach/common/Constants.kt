@@ -3,5 +3,6 @@ package com.example.kimcoach.common
 object Constants {
 
     const val SENSOR_FILE_NAME = "Sensordata.csv"
-    const val CONFIRM_MESSAGE = "확인"
+    const val CHANNEL_MSG =  "com.example.android.wearable.datalayer.channelmessage"
+
 }

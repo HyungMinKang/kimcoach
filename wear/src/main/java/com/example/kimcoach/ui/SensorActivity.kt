@@ -8,24 +8,19 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
-import android.view.View
 import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.example.kimcoach.R
 import com.example.kimcoach.common.Constants
-import com.example.kimcoach.common.GlideModule
 import com.example.kimcoach.databinding.ActivitySensorBinding
 import com.example.kimcoach.room.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.google.android.gms.location.*
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,9 +42,17 @@ class SensorActivity : Activity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         binding = ActivitySensorBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        Glide.with(this).load(R.drawable.running).circleCrop().into(binding.ivSensorOnLoading)
+        loadingBackGroundGif()
         registerSensor()
+        initDataBase()
+        registerStopBtn()
+    }
+
+    private fun loadingBackGroundGif(){
+        Glide.with(this).load(R.drawable.running).circleCrop().into(binding.ivSensorOnLoading)
+    }
+
+    private fun initDataBase(){
         db = SensorDataBase.getInstance(applicationContext)!!
         dao = db.sensorDao()
         CoroutineScope(Dispatchers.IO).launch {
@@ -58,20 +61,18 @@ class SensorActivity : Activity(), SensorEventListener {
             dao.deleteAcceleratorTable()
             dao.deleteHeartBeatTable()
         }
-        registerStopBtn()
     }
 
     private fun registerMoveToUploadBtn(){
         binding.btnMoveToUpload.setOnClickListener {
+            it.isEnabled = false
             moveToUpload()
         }
     }
 
     private fun registerStopBtn() {
         binding.btnStopSensor.setOnClickListener {
-
             CoroutineScope(Dispatchers.IO).launch {
-
                 launch {
                     accList = (dao.getAllAcceleratorData())
                     gyroList = dao.getAllGyroData()
@@ -83,10 +84,8 @@ class SensorActivity : Activity(), SensorEventListener {
                     exportDatabaseToCSVFile()
                 }.join()
 
-
-
             }
-            Toast.makeText(this, "경기 기록 완료", LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.sensor_finish_message), LENGTH_SHORT).show()
             binding.btnStopSensor.isVisible = false
             binding.btnMoveToUpload.isVisible = true
             binding.btnMoveToUpload.isEnabled = true
@@ -108,8 +107,6 @@ class SensorActivity : Activity(), SensorEventListener {
         val csvFile = generateFile(this, getCSVFileName())
         if (csvFile != null) {
             exportSensorDataToCsv(csvFile)
-
-
             try {
                 val intent = goToFileIntent(this, csvFile)
                 startActivity(intent)
@@ -117,7 +114,7 @@ class SensorActivity : Activity(), SensorEventListener {
 
             }
         } else {
-            Toast.makeText(this, "CSV 파일 생성 실패", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.sensor_file_make_fail_message), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -147,51 +144,32 @@ class SensorActivity : Activity(), SensorEventListener {
 
     private fun exportSensorDataToCsv(csvFile: File) {
         csvWriter().open(csvFile, append = false) {
-            writeRow(listOf("ACC [id]", "[Time]", "[X]", "[Y]", "[Z]"))
-            accList?.forEachIndexed { index, data ->
-                writeRow(listOf(index, data.timestamp, data.x, data.y, data.z))
+            writeRow(listOf(getString(R.string.acc_table_name), getString(R.string.table_id), getString(R.string.table_time), getString(R.string.table_x), getString(R.string.table_y), getString(R.string.table_z)))
+            accList?.forEachIndexed { index, acceleratorEntity ->
+                writeRow(listOf(index, acceleratorEntity.timestamp, acceleratorEntity.x, acceleratorEntity.y, acceleratorEntity.z))
             }
 
-
-            writeRow(listOf("GYRO [id]", "[Time]", "[X]", "[Y]", "[Z]"))
+            writeRow(listOf(getString(R.string.gyro_table_name), getString(R.string.table_id), getString(R.string.table_time), getString(R.string.table_x), getString(R.string.table_y), getString(R.string.table_z)))
             gyroList?.forEachIndexed { index, gyroEntity ->
                 writeRow(
-                    listOf(
-                        index,
-                        gyroEntity.timestamp,
-                        gyroEntity.x,
-                        gyroEntity.y,
-                        gyroEntity.z
-                    )
+                    listOf(index, gyroEntity.timestamp, gyroEntity.x, gyroEntity.y, gyroEntity.z)
                 )
             }
 
-
-            writeRow(listOf("HeartBeat [id]", "[Time]", "Beat"))
+            writeRow(listOf(getString(R.string.heart_table_name), getString(R.string.table_id), getString(R.string.table_time), getString(R.string.heart_beat)))
             heartBeatList?.forEachIndexed { index, heartBeatEntity ->
                 writeRow(listOf(index, heartBeatEntity.timestamp, heartBeatEntity.beat))
             }
 
-
-
-            writeRow(listOf("GPS [id]", "[Time]", "[X]", "[Y]"))
+            writeRow(listOf(getString(R.string.gps_table_name),  getString(R.string.table_id), getString(R.string.table_time), getString(R.string.gps_latitude), getString(R.string.gps_longitude)))
             gpsList?.forEachIndexed { index, gpsEntity ->
-                writeRow(
-                    listOf(
-                        index,
-                        gpsEntity.timestamp,
-                        gpsEntity.latitude,
-                        gpsEntity.longitude
-                    )
+                writeRow(listOf(index, gpsEntity.timestamp, gpsEntity.latitude, gpsEntity.longitude)
                 )
             }
-
         }
-
-
     }
 
-    @SuppressLint("MissingPermission")
+
     private fun registerGps() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         startLocationUpdates()
@@ -202,7 +180,6 @@ class SensorActivity : Activity(), SensorEventListener {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = Priority.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 2 * 1000
-
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (locationResult == null) {
@@ -211,24 +188,14 @@ class SensorActivity : Activity(), SensorEventListener {
                 for (location in locationResult.locations) {
                     if (location != null) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            dao.insertGps(
-                                GpsEntity(
-                                    0,
-                                    System.currentTimeMillis().toString(),
-                                    location.latitude,
-                                    location.longitude
-                                )
+                            dao.insertGps(GpsEntity(0, System.currentTimeMillis().toString(), location.latitude, location.longitude)
                             )
                         }
                     }
                 }
             }
         }
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        );
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
 
     }
 
@@ -236,30 +203,15 @@ class SensorActivity : Activity(), SensorEventListener {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         registerGps()
         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
-            sensorManager.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
-            )
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
         sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.also {
-            sensorManager.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
-            )
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
         sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)?.also {
-            sensorManager.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
-            )
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
     }
@@ -267,14 +219,7 @@ class SensorActivity : Activity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_GYROSCOPE) {
             CoroutineScope(Dispatchers.IO).launch {
-                dao.insertGyro(
-                    GyroEntity(
-                        0,
-                        System.currentTimeMillis().toString(),
-                        event.values[0].toDouble(),
-                        event.values[1].toDouble(),
-                        event.values[2].toDouble()
-                    )
+                dao.insertGyro(GyroEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble())
                 )
             }
         }
@@ -282,13 +227,7 @@ class SensorActivity : Activity(), SensorEventListener {
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertAccelerator(
-                    AcceleratorEntity(
-                        0,
-                        System.currentTimeMillis().toString(),
-                        event.values[0].toDouble(),
-                        event.values[1].toDouble(),
-                        event.values[2].toDouble()
-                    )
+                    AcceleratorEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble())
                 )
             }
         }
@@ -296,11 +235,7 @@ class SensorActivity : Activity(), SensorEventListener {
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertHeartBeat(
-                    HeartBeatEntity(
-                        0,
-                        System.currentTimeMillis().toString(),
-                        event.values[0].toInt()
-                    )
+                    HeartBeatEntity(0, System.currentTimeMillis().toString(), event.values[0].toInt())
                 )
             }
         }
@@ -309,7 +244,6 @@ class SensorActivity : Activity(), SensorEventListener {
     override fun onAccuracyChanged(event: Sensor?, p1: Int) {
         return
     }
-
 
     override fun onDestroy() {
         sensorManager.unregisterListener(this)

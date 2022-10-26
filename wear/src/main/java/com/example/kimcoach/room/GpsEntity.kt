@@ -2,8 +2,6 @@ package com.example.kimcoach.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDateTime
-import java.util.*
 
 
 @Entity(tableName = "Gps")

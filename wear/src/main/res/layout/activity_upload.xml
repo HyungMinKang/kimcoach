@@ -2,26 +2,63 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/box_inset_layout_padding"
-    android:id="@+id/layout"
     android:background="@drawable/upload"
+    android:padding="@dimen/box_inset_layout_padding"
     tools:context=".ui.UploadActivity"
     tools:deviceIds="wear">
 
 
     <Button
-        android:layout_marginBottom="40dp"
-        android:paddingHorizontal="20dp"
-        android:layout_width="wrap_content"
-        android:background="@drawable/btn_radius_black"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/btn_upload_sensor"
-        android:text="업로드하기"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/btn_radius_black"
+        android:paddingHorizontal="20dp"
+        android:text="@string/upload_btn_upload"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pg_upload"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="200dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="60dp"
+        android:minHeight="90dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_upload_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/uploading_loading_upload"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pg_upload" />
+
+    <Button
+        android:id="@+id/btn_move_to_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/btn_radius_black"
+        android:enabled="false"
+        android:paddingHorizontal="20dp"
+        android:text="@string/upload_move_to_home"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
