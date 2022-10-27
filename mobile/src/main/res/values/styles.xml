@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    //33pxx
+
+    <style name="HeadLine4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textSize">33sp</item>
+    </style>
+
+    <style name="HeadLine4.Black">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
+    //23px
+
+    <style name="HeadLine5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">23sp</item>
+    </style>
+
+    <style name="HeadLine5.Black">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    //20px
+
+    <style name="HeadLine6" parent="TextAppearance.MaterialComponents.Headline6" />
+
+    <style name="HeadLine6.Black">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="HeadLine6.Black.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    //16px
+
+    <style name="Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1" />
+
+    <style name="Subtitle1.Black">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Subtitle1.Grey3">
+        <item name="android:textColor">@color/grey3</item>
+    </style>
+
+    <style name="Subtitle1.Grey1">
+        <item name="android:textColor">@color/grey1</item>
+    </style>
+
+    <style name="Subtitle1.Green1">
+        <item name="android:textColor">@color/green1</item>
+    </style>
+
+    //14px
+
+    <style name="Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2" />
+
+    <style name="Subtitle2.Grey">
+        <item name="android:textColor">@color/grey3</item>
+    </style>
+
+    <style name="Subtitle2.White">
+        <item name="android:textColor">@color/grey_scale_off_white</item>
+    </style>
+
+    <style name="Subtitle2.White.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Subtitle2.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    //12px
+
+    <style name="Caption" parent="TextAppearance.MaterialComponents.Caption">
+
+    </style>
+
+    <style name="Caption.Grey">
+        <item name="android:textColor">@color/grey2</item>
+    </style>
+
+    <style name="Caption.White">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    //10px
+
+    <style name="Overline" parent="TextAppearance.MaterialComponents.Overline" />
+
+    <style name="Overline.Black">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Overline.Grey2">
+        <item name="android:textColor">@color/grey2</item>
+    </style>
+
+
+</resources>
