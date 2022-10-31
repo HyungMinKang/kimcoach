@@ -7,24 +7,74 @@
 
     </data>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#251B37"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="4dp"
         tools:context=".ui.home.HomeFragment">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_load_file"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_home_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Welcome Back "
+
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/btn_radius_green"
-            android:text="파일받기"
             android:textColor="@color/white"
+            android:textSize="35sp"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="12dp"
             />
 
+
+        <TextView
+            android:id="@+id/tv_home_match_reservation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_home_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:text="예정된 매치"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_home_reserved_match"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginHorizontal="12dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_home_match_reservation"
+            tools:listitem="@layout/item_home_reserved_match"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+        </androidx.recyclerview.widget.RecyclerView>
+        <TextView
+            android:id="@+id/tv_home_match_data_sync_not_complete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/rv_home_reserved_match"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:text="데이터 미등록 경기"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>
