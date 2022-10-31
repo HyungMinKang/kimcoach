@@ -2,4 +2,28 @@
     <string name="app_name">mobile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="signup_error_name_validation">이름을 입력해주세요</string>
+    <string name="signup_error_password_confirm_validation">비밀번호가 일치하지 않습니다</string>
+    <string name="singup_error_password_validation_special_char">영어대소문자, 숫자로만 구성되어야 합니다</string>
+    <string name="signup_error_password_validation_min_length">8자 이상 입력해주세요</string>
+    <string name="signup_error_password_validation_empty_input">비밀번호를 입력해주세요</string>
+    <string name="signup_error_id_validation_email_form">이메일 형식을 입력해주세요</string>
+    <string name="signup_error_id_validation_empty_input">아이디를 입력해주세요</string>
+    <string name="login_subtitle_text">당신의 손목위에 AI 코치</string>
+    <string name="login_title_text">KIM COACH</string>
+    <string name="login_id_label_text">아이디</string>
+    <string name="login_id_input_hint">Input your email ID</string>
+    <string name="login_password_label_text">비밀번호</string>
+    <string name="login_password_input_hint">Input your password</string>
+    <string name="login_login_btn_text">로그인</string>
+    <string name="login_password_btn_text">회원가입</string>
+    <string name="signup_title_text">회원가입</string>
+    <string name="signup_id_title_text">아이디</string>
+    <string name="signup_id_input_hint">Input your email ID</string>
+    <string name="signup_password_title_text">비밀번호</string>
+    <string name="signup_password_input_title">8-16 영어대소문자, 숫자</string>
+    <string name="signup_password_confirm_title_text">비밀번호 확인</string>
+    <string name="signup_name_title_text">이름</string>
+    <string name="signup_birthdate_title_text">생년월일</string>
+    <string name="signup_signup_btn_text">가입하기</string>
 </resources>

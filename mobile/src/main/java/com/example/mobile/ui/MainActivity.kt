@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         navController?.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.loginFragment -> hideBottomNavigation()
+                R.id.signUpFragment -> hideBottomNavigation()
                 else -> showBottomNavigation()
             }
         }
@@ -53,49 +54,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.isVisible = false
     }
 
-
-    private fun registerChannel() {
-        Toast.makeText(this, "CSV 파일 다운로드 시작", Toast.LENGTH_LONG).show()
-        CoroutineScope(Dispatchers.IO).launch {
-            Wearable.getChannelClient(applicationContext)
-                .registerChannelCallback(object : ChannelClient.ChannelCallback() {
-                    override fun onChannelOpened(channel: ChannelClient.Channel) {
-                        super.onChannelOpened(channel)
-                        println("channel opened")
-
-
-                        val sensorFile =
-                            File(applicationContext.getFileStreamPath("SensorData.csv").path)
-
-                        if (sensorFile.exists()) {
-                            sensorFile.delete()
-                        }
-                        Wearable.getChannelClient(applicationContext)
-                            .receiveFile(channel, Uri.fromFile(sensorFile), true)
-                        Wearable.getChannelClient(applicationContext)
-                            .registerChannelCallback(object : ChannelClient.ChannelCallback() {
-                                override fun onInputClosed(
-                                    channel: ChannelClient.Channel,
-                                    p1: Int,
-                                    p2: Int
-                                ) {
-                                    super.onInputClosed(channel, p1, p2)
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        "CSV 파일 다운로드 완료",
-                                        Toast.LENGTH_LONG
-                                    )
-                                        .show()
-                                    Wearable.getChannelClient(applicationContext).close(channel)
-                                }
-                            })
-
-                    }
-
-
-                })
-        }
-    }
 }
 
 
