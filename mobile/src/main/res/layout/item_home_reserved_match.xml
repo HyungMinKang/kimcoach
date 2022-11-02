@@ -84,7 +84,7 @@
             app:layout_constraintTop_toTopOf="@id/tv_match_place_title"
             app:layout_constraintBottom_toBottomOf="@id/tv_match_place"
             android:background="@drawable/btn_radius_purple"
-            android:text = "경기 데이터 받기"
+            android:text = "취소하기"
             android:textColor="@color/white"
             android:paddingHorizontal="5dp"
             android:layout_marginEnd="12dp"

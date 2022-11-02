@@ -73,7 +73,7 @@
             android:textSize="28sp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
-            android:text="데이터 미등록 경기"
+            android:text="완료된 경기"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
