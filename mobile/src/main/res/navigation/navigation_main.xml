@@ -37,4 +37,8 @@
         android:name="com.example.mobile.ui.my.MyFragment"
         android:label="fragment_my"
         tools:layout="@layout/fragment_my" />
+    <fragment
+        android:id="@id/navigation_team"
+        android:name="com.example.mobile.ui.team.TeamFragment"
+        android:label="TeamFragment" />
 </navigation>

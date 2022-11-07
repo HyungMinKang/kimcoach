@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.R
 import com.example.mobile.databinding.FragmentHomeBinding
 import com.example.mobile.domain.model.ReservedMatch
@@ -42,6 +43,7 @@ class HomeFragment : Fragment() {
     private fun makeDummyMatchList(): List<ReservedMatch> {
         return listOf<ReservedMatch>(ReservedMatch("2022-10-31","수원"),ReservedMatch("2022-10-31","인천"),ReservedMatch("2022-11-15","안양"), ReservedMatch("2022-11-31","의정부") )
     }
+
 
     private fun registerChannel() {
         Toast.makeText(requireContext(), "CSV 파일 다운로드 시작", Toast.LENGTH_LONG).show()

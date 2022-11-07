@@ -47,7 +47,7 @@
             app:layout_constraintTop_toTopOf="@id/tv_my_name_title"
             style="@style/HeadLine5.Black"
             app:layout_constraintBottom_toBottomOf="@id/tv_my_name_title"
-            android:text="강형민"
+            android:text="홍길동"
             />
 
         <TextView

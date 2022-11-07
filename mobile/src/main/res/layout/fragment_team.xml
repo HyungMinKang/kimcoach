@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@color/dark_purple"
+            tools:context=".ui.my.MyFragment">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_my_team_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/btn_radius_white"
+                android:paddingBottom="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_my_team_image"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/team_sample_logo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_my_team_name"
+                    style="@style/HeadLine6.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="팀명 : 안양FC "
+                    app:layout_constraintStart_toEndOf="@id/iv_my_team_image"
+                    app:layout_constraintTop_toTopOf="@id/iv_my_team_image" />
+
+                <TextView
+                    android:id="@+id/tv_my_team_count"
+                    style="@style/HeadLine6.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="팀원: 13명 "
+                    app:layout_constraintStart_toStartOf="@id/tv_my_team_name"
+                    app:layout_constraintTop_toBottomOf="@id/tv_my_team_name" />
+
+                <TextView
+                    android:id="@+id/tv_my_team_leader"
+                    style="@style/HeadLine6.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="팀장: XXX"
+                    app:layout_constraintStart_toStartOf="@id/tv_my_team_name"
+                    app:layout_constraintTop_toBottomOf="@id/tv_my_team_count" />
+
+                <TextView
+                    android:id="@+id/tv_my_team_match_record"
+                    style="@style/HeadLine6.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="최근 전적: 11승 5무 8패"
+                    app:layout_constraintStart_toStartOf="@id/tv_my_team_name"
+                    app:layout_constraintTop_toBottomOf="@id/tv_my_team_leader" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:id="@+id/rv_team_member_list"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="16dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:listitem="@layout/item_team_card"
+                app:layout_constraintTop_toBottomOf="@id/cl_my_team_info"
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
