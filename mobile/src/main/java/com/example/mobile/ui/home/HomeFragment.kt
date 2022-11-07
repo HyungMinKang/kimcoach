@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.R
 import com.example.mobile.databinding.FragmentHomeBinding
+import com.example.mobile.domain.model.CompletedMatch
 import com.example.mobile.domain.model.ReservedMatch
 import com.google.android.gms.wearable.ChannelClient
 import com.google.android.gms.wearable.Wearable
@@ -35,15 +36,27 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val adapter = HomeAdapter()
         binding.rvHomeReservedMatch.adapter = adapter
-        binding.rvHomeReservedMatch.layoutManager
         adapter.submitList(makeDummyMatchList())
 
+        val completedMatchAdapter = HomeCompleteMatchAdapter()
+        binding.rvHomeCompletedMatch.adapter = completedMatchAdapter
+        completedMatchAdapter.submitList(makeDummyCompleteList())
     }
 
     private fun makeDummyMatchList(): List<ReservedMatch> {
         return listOf<ReservedMatch>(ReservedMatch("2022-10-31","수원"),ReservedMatch("2022-10-31","인천"),ReservedMatch("2022-11-15","안양"), ReservedMatch("2022-11-31","의정부") )
     }
 
+    private fun makeDummyCompleteList(): MutableList<CompletedMatch> {
+        val items = mutableListOf<CompletedMatch>()
+        items.add(CompletedMatch("XXX", "XXXX-XX-XX", false))
+        items.add(CompletedMatch("XXX", "XXXX-XX-XX", false))
+        items.add(CompletedMatch("XXX", "XXXX-XX-XX", false))
+        items.add(CompletedMatch("XXX", "XXXX-XX-XX", true))
+        items.add(CompletedMatch("XXX", "XXXX-XX-XX", true))
+        return items
+
+    }
 
     private fun registerChannel() {
         Toast.makeText(requireContext(), "CSV 파일 다운로드 시작", Toast.LENGTH_LONG).show()
