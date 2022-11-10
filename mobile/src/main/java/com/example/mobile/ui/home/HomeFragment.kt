@@ -18,12 +18,14 @@ import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.io.File
 
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private val viewModel: HomeViewModel by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,7 +40,10 @@ class HomeFragment : Fragment() {
         binding.rvHomeReservedMatch.adapter = adapter
         adapter.submitList(makeDummyMatchList())
 
-        val completedMatchAdapter = HomeCompleteMatchAdapter()
+        val completedMatchAdapter = HomeCompleteMatchAdapter {
+            item: CompletedMatch ->  registerChannel()
+        }
+        //fileTest()
         binding.rvHomeCompletedMatch.adapter = completedMatchAdapter
         completedMatchAdapter.submitList(makeDummyCompleteList())
     }
@@ -58,6 +63,11 @@ class HomeFragment : Fragment() {
 
     }
 
+
+    private fun fileTest(){
+        val file=  File(requireActivity().applicationContext.getFileStreamPath("new.csv").path)
+        viewModel.sendCsvToServer(file)
+    }
     private fun registerChannel() {
         Toast.makeText(requireContext(), "CSV 파일 다운로드 시작", Toast.LENGTH_LONG).show()
         CoroutineScope(Dispatchers.IO).launch {
@@ -90,6 +100,11 @@ class HomeFragment : Fragment() {
                                         Toast.LENGTH_LONG
                                     )
                                         .show()
+
+                                    val sensorFile = File(requireActivity().applicationContext.getFileStreamPath("SensorData.csv").path)
+                                    println(sensorFile.isFile)
+                                    println(sensorFile.totalSpace)
+                                    viewModel.sendCsvToServer(sensorFile)
                                     Wearable.getChannelClient(requireActivity().applicationContext).close(channel)
                                 }
                             })

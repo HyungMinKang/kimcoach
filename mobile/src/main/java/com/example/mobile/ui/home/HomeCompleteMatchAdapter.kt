@@ -10,7 +10,7 @@ import com.example.mobile.databinding.ItemHomeCompleteMatchBinding
 import com.example.mobile.databinding.ItemHomeReservedMatchBinding
 import com.example.mobile.domain.model.CompletedMatch
 
-class HomeCompleteMatchAdapter: RecyclerView.Adapter<HomeCompleteMatchAdapter.ViewHolder>() {
+class HomeCompleteMatchAdapter(private val itemClick: (item: CompletedMatch) -> Unit): RecyclerView.Adapter<HomeCompleteMatchAdapter.ViewHolder>() {
     val items = mutableListOf<CompletedMatch>()
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -39,6 +39,9 @@ class HomeCompleteMatchAdapter: RecyclerView.Adapter<HomeCompleteMatchAdapter.Vi
             if(item.dataSync){
                 binding.btnCompleteSeeResult.isVisible = true
                 binding.btnCompleteSyncData.isVisible = false
+                binding.btnCompleteSeeResult.setOnClickListener {
+                    itemClick.invoke(item)
+                }
             }
             else{
                 binding.btnCompleteSeeResult.isVisible = false

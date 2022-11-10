@@ -1,9 +1,14 @@
 package com.example.mobile.di
 
+import com.example.mobile.data.dto.remote.home.HomeApi
+import com.example.mobile.data.dto.remote.home.HomeDataSource
+import com.example.mobile.data.dto.remote.home.HomeRemoteDataSource
 import com.example.mobile.data.dto.remote.login.LoginApi
 import com.example.mobile.data.dto.remote.login.LoginDataSource
 import com.example.mobile.data.dto.remote.login.LoginRemoteDataSource
+import com.example.mobile.data.dto.remote.repository.HomeRepositoryImpl
 import com.example.mobile.data.dto.remote.repository.LoginRepositoryImpl
+import com.example.mobile.domain.HomeRepository
 import com.example.mobile.domain.LoginRepository
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
@@ -30,7 +35,7 @@ val NetWorkModule = module {
 
     single<Retrofit>(named("LoginRetrofit")) {
         Retrofit.Builder()
-            .baseUrl("http://54.180.127.134/home/")
+            .baseUrl("http://163.239.223.177:5006/")
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
             .client(get(named("Normal")))
             .build()
@@ -41,4 +46,11 @@ val NetWorkModule = module {
     }
     single<LoginDataSource> { LoginRemoteDataSource(get()) }
     single<LoginRepository> { LoginRepositoryImpl(get()) }
+
+    single<HomeApi>{
+        get<Retrofit>(named("LoginRetrofit")).create(HomeApi::class.java)
+    }
+    single<HomeDataSource> { HomeRemoteDataSource(get()) }
+    single<HomeRepository> { HomeRepositoryImpl(get()) }
+
 }
