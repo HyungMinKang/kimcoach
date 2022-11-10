@@ -31,6 +31,9 @@
         android:name="com.example.mobile.ui.home.HomeFragment"
         android:label="HomeFragment" >
 
+        <action
+            android:id="@+id/action_navigation_home_to_registerMatchFragment"
+            app:destination="@id/registerMatchFragment" />
     </fragment>
     <fragment
         android:id="@id/navigation_my"
@@ -41,4 +44,8 @@
         android:id="@id/navigation_team"
         android:name="com.example.mobile.ui.team.TeamFragment"
         android:label="TeamFragment" />
+    <fragment
+        android:id="@+id/registerMatchFragment"
+        android:name="com.example.mobile.ui.home.RegisterMatchFragment"
+        android:label="RegisterMatchFragment" />
 </navigation>

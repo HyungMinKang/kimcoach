@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.R
 import com.example.mobile.databinding.FragmentHomeBinding
@@ -26,6 +28,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by inject()
+    private lateinit var navigator: NavController
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +40,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = HomeAdapter()
+        navigator = Navigation.findNavController(view)
         binding.rvHomeReservedMatch.adapter = adapter
         adapter.submitList(makeDummyMatchList())
 
@@ -44,6 +48,10 @@ class HomeFragment : Fragment() {
             item: CompletedMatch ->  registerChannel()
         }
         //fileTest()
+
+        binding.fabHome.setOnClickListener {
+            navigator.navigate(R.id.action_navigation_home_to_registerMatchFragment)
+        }
         binding.rvHomeCompletedMatch.adapter = completedMatchAdapter
         completedMatchAdapter.submitList(makeDummyCompleteList())
     }
