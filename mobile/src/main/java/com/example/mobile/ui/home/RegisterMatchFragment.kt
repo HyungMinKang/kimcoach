@@ -11,7 +11,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.core.view.isEmpty
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.example.mobile.R
 import com.example.mobile.databinding.FragmentRegisterMatchBinding
 import com.example.mobile.domain.model.SpinnerType
@@ -23,6 +26,7 @@ class RegisterMatchFragment : Fragment() {
     private lateinit var binding:FragmentRegisterMatchBinding
     private lateinit var regionSpinner:Spinner
     private lateinit var stadiumSpinner: Spinner
+    private lateinit var navigator: NavController
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,16 +37,22 @@ class RegisterMatchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navigator = Navigation.findNavController(view)
         regionSpinner = binding.spinnerRegisterMatchRegion
         stadiumSpinner = binding.spinnerRegisterMatchStadium
         binding.tieRegisterMatchDate.setOnClickListener {
             showDateDialog()
         }
         setSpinner(listOf("지역선택","인천","서울","경기","부산","대구"), SpinnerType.REGION)
-
+        registerMatch()
 
     }
 
+    private fun registerMatch(){
+        binding.btnRegisterMatch.setOnClickListener {
+            navigator.navigate(R.id.action_registerMatchFragment_to_navigation_home)
+        }
+    }
     private fun loadRegionStadium(region:String){
         val list = listOf("경기장선택 ", "$region 1", "$region 2", "$region 3", "$region 4")
         setSpinner(list, SpinnerType.STADIUM)
@@ -62,7 +72,10 @@ class RegisterMatchFragment : Fragment() {
             ) {
                 when (position) {
                     0 -> (view as TextView).setTextColor(Color.GRAY)
-                    else -> (view as TextView).setTextColor(Color.BLACK)
+                    else -> {
+                        (view as TextView).setTextColor(Color.BLACK)
+                        checkAllInput()
+                    }
                 }
 
                 when(type){
@@ -95,5 +108,13 @@ class RegisterMatchFragment : Fragment() {
     private val matchDateSetListener = DatePickerDialog.OnDateSetListener() { view, year, month, dayOfMonth ->
         val dateString = "${year}년 ${month + 1}월 ${dayOfMonth}일"
         binding.tieRegisterMatchDate.setText(dateString)
+        checkAllInput()
+    }
+
+    private fun checkAllInput(){
+        binding.btnRegisterMatch.isEnabled =(binding.tieRegisterMatchDate.text?.isEmpty() == false && !binding.spinnerRegisterMatchRegion.isEmpty() && !binding.spinnerRegisterMatchStadium.isEmpty())
+        if(binding.btnRegisterMatch.isEnabled){
+            binding.btnRegisterMatch.setBackgroundResource(R.drawable.btn_radius_green)
+        }
     }
 }

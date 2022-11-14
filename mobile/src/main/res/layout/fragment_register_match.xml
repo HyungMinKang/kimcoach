@@ -106,10 +106,12 @@
             />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_register_match"
             android:layout_width="match_parent"
+            android:enabled="false"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/spinner_register_match_region"
-            android:background="@drawable/btn_radius_green"
+            android:background="@drawable/btn_radius_grey"
             android:layout_marginHorizontal="12dp"
             android:layout_marginTop="48dp"
             android:text="등록하기"

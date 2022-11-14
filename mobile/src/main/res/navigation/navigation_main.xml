@@ -47,5 +47,9 @@
     <fragment
         android:id="@+id/registerMatchFragment"
         android:name="com.example.mobile.ui.home.RegisterMatchFragment"
-        android:label="RegisterMatchFragment" />
+        android:label="RegisterMatchFragment" >
+        <action
+            android:id="@+id/action_registerMatchFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 </navigation>
