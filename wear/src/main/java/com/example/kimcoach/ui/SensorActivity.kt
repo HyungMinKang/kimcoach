@@ -34,6 +34,7 @@ class SensorActivity : Activity(), SensorEventListener {
     private var gyroList: List<GyroEntity>? = null
     private var heartBeatList: List<HeartBeatEntity>? = null
     private var gpsList: List<GpsEntity>? = null
+    private var gameRvList: List<GameRotationVectorEntity>? = null
     private lateinit var sensorManager: SensorManager
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -60,6 +61,7 @@ class SensorActivity : Activity(), SensorEventListener {
             dao.deleteGyroTable()
             dao.deleteAcceleratorTable()
             dao.deleteHeartBeatTable()
+            dao.deleteGameRotationVectorTable()
         }
     }
 
@@ -78,6 +80,7 @@ class SensorActivity : Activity(), SensorEventListener {
                     gyroList = dao.getAllGyroData()
                     heartBeatList = dao.getAllHeartBeatData()
                     gpsList = dao.getAllGpsData()
+                    gameRvList = dao.getAllGameRotationVector()
                 }.join()
 
                 launch {
@@ -156,16 +159,19 @@ class SensorActivity : Activity(), SensorEventListener {
                 )
             }
 
-            writeRow(listOf(getString(R.string.heart_table_name), getString(R.string.table_id), getString(R.string.table_time), getString(R.string.heart_beat)))
-            heartBeatList?.forEachIndexed { index, heartBeatEntity ->
-                writeRow(listOf(index, heartBeatEntity.timestamp, heartBeatEntity.beat))
-            }
+//            writeRow(listOf(getString(R.string.heart_table_name), getString(R.string.table_id), getString(R.string.table_time), getString(R.string.heart_beat)))
+//            heartBeatList?.forEachIndexed { index, heartBeatEntity ->
+//                writeRow(listOf(index, heartBeatEntity.timestamp, heartBeatEntity.beat))
+//            }
 
             writeRow(listOf(getString(R.string.gps_table_name),  getString(R.string.table_id), getString(R.string.table_time), getString(R.string.gps_latitude), getString(R.string.gps_longitude)))
             gpsList?.forEachIndexed { index, gpsEntity ->
                 writeRow(listOf(index, gpsEntity.timestamp, gpsEntity.latitude, gpsEntity.longitude)
                 )
             }
+
+            writeRow(listOf("GAME RV", getString(R.string.table_time), getString(R.string.table_x), getString(R.string.table_y), getString(R.string.table_z)))
+
         }
     }
 
@@ -202,17 +208,23 @@ class SensorActivity : Activity(), SensorEventListener {
     private fun registerSensor() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         registerGps()
-        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
+        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER_UNCALIBRATED)?.also {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
-        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.also {
+        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED)?.also {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
-        sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)?.also {
+        sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR)?.also{
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
         }
+
+        /*sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)?.also {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
+        }
+
+         */
 
     }
 
@@ -228,6 +240,14 @@ class SensorActivity : Activity(), SensorEventListener {
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertAccelerator(
                     AcceleratorEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble())
+                )
+            }
+        }
+
+        if(event?.sensor?.type == Sensor.TYPE_GAME_ROTATION_VECTOR){
+            CoroutineScope(Dispatchers.IO).launch {
+                dao.insertGameRotationVector(
+                    GameRotationVectorEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble())
                 )
             }
         }

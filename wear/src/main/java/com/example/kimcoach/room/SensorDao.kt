@@ -19,6 +19,9 @@ interface SensorDao {
     @Insert
     fun insertHeartBeat(entity: HeartBeatEntity)
 
+    @Insert
+    fun insertGameRotationVector(entity: GameRotationVectorEntity)
+
     @Query("DELETE FROM Accelerator")
     fun deleteAcceleratorTable()
 
@@ -31,6 +34,9 @@ interface SensorDao {
     @Query("DELETE FROM HeartBeat")
     fun deleteHeartBeatTable()
 
+    @Query("DELETE FROM GameRotationVector")
+    fun deleteGameRotationVectorTable()
+
     @Query("SELECT * FROM Accelerator")
     fun getAllAcceleratorData():List<AcceleratorEntity>
 
@@ -42,6 +48,9 @@ interface SensorDao {
 
     @Query("SELECT * FROM HeartBeat")
     fun getAllHeartBeatData():List<HeartBeatEntity>
+
+    @Query("SELECT * FROM GameRotationVector")
+    fun getAllGameRotationVector():List<GameRotationVectorEntity>
 
 
 
