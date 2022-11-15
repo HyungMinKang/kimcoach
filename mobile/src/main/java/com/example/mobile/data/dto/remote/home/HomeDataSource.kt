@@ -4,5 +4,5 @@ import okhttp3.MultipartBody
 
 interface HomeDataSource {
 
-    suspend fun uploadCSV(data: MultipartBody.Part):String
+    suspend fun uploadCSV(data: MultipartBody.Part): String
 }

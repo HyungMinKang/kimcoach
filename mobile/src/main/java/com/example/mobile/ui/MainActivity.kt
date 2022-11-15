@@ -1,23 +1,13 @@
 package com.example.mobile.ui
 
-import android.net.Uri
 import android.os.Bundle
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.mobile.R
 import com.example.mobile.databinding.ActivityMainBinding
-import com.google.android.gms.wearable.ChannelClient
-import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +22,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNav() {
-        val navController = supportFragmentManager.findFragmentById(R.id.fragment_container)?.findNavController()
+        val navController =
+            supportFragmentManager.findFragmentById(R.id.fragment_container)?.findNavController()
         navController?.let {
             binding.bottomNavigationView.setupWithNavController(it)
         }
@@ -46,11 +37,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showBottomNavigation(){
+    private fun showBottomNavigation() {
         binding.bottomNavigationView.isVisible = true
     }
 
-    private fun hideBottomNavigation(){
+    private fun hideBottomNavigation() {
         binding.bottomNavigationView.isVisible = false
     }
 

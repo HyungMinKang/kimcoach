@@ -1,11 +1,11 @@
 package com.example.mobile.ui.team
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.example.mobile.R
 import com.example.mobile.databinding.FragmentTeamBinding
 import com.example.mobile.domain.model.TeamMember
@@ -13,7 +13,7 @@ import com.example.mobile.domain.model.TeamMember
 
 class TeamFragment : Fragment() {
 
-    private lateinit var binding:FragmentTeamBinding
+    private lateinit var binding: FragmentTeamBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

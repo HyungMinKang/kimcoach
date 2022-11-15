@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_navigation_home_to_registerMatchFragment"
             app:destination="@id/registerMatchFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_matchResultFragment"
+            app:destination="@id/matchResultFragment" />
     </fragment>
     <fragment
         android:id="@id/navigation_my"
@@ -52,4 +55,9 @@
             android:id="@+id/action_registerMatchFragment_to_navigation_home"
             app:destination="@id/navigation_home" />
     </fragment>
+    <fragment
+        android:id="@+id/matchResultFragment"
+        android:name="com.example.mobile.ui.home.MatchResultFragment"
+        android:label="fragment_match_result"
+        tools:layout="@layout/fragment_match_result" />
 </navigation>

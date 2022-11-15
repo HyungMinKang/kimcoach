@@ -9,14 +9,14 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.io.File
 
-class HomeViewModel(private val repository: HomeRepository):ViewModel() {
+class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
     private val coroutineExceptionHandler: CoroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             Log.e("Error", ": ${throwable.message}")
         }
 
-    fun sendCsvToServer(file:File){
+    fun sendCsvToServer(file: File) {
         viewModelScope.launch(coroutineExceptionHandler) {
             val part = FormDataUtil.getCsvMultipart("file", file)
             println(repository.uploadFile(part))

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.databinding.ItemHomeReservedMatchBinding
 import com.example.mobile.domain.model.ReservedMatch
 
-class HomeAdapter: RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
     val items = mutableListOf<ReservedMatch>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdapter.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -21,7 +21,7 @@ class HomeAdapter: RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
         return items.size
     }
 
-    fun submitList(items:List<ReservedMatch>){
+    fun submitList(items: List<ReservedMatch>) {
         this.items.addAll(items)
         notifyDataSetChanged()
     }

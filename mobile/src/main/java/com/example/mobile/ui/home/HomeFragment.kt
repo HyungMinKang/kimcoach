@@ -2,15 +2,14 @@ package com.example.mobile.ui.home
 
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile.R
 import com.example.mobile.databinding.FragmentHomeBinding
 import com.example.mobile.domain.model.CompletedMatch
@@ -44,9 +43,12 @@ class HomeFragment : Fragment() {
         binding.rvHomeReservedMatch.adapter = adapter
         adapter.submitList(makeDummyMatchList())
 
-        val completedMatchAdapter = HomeCompleteMatchAdapter {
-            item: CompletedMatch ->  registerChannel()
-        }
+        val completedMatchAdapter =
+            HomeCompleteMatchAdapter({ item: CompletedMatch -> registerChannel() })
+            { item: CompletedMatch ->
+                moveToResultPage()
+            }
+
         //fileTest()
 
         binding.fabHome.setOnClickListener {
@@ -57,7 +59,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun makeDummyMatchList(): List<ReservedMatch> {
-        return listOf<ReservedMatch>(ReservedMatch("2022-10-31","수원"),ReservedMatch("2022-10-31","인천"),ReservedMatch("2022-11-15","안양"), ReservedMatch("2022-11-31","의정부") )
+        return listOf<ReservedMatch>(
+            ReservedMatch("2022-10-31", "수원"),
+            ReservedMatch("2022-10-31", "인천"),
+            ReservedMatch("2022-11-15", "안양"),
+            ReservedMatch("2022-11-31", "의정부")
+        )
     }
 
     private fun makeDummyCompleteList(): MutableList<CompletedMatch> {
@@ -72,10 +79,15 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun fileTest(){
-        val file=  File(requireActivity().applicationContext.getFileStreamPath("new.csv").path)
+    private fun fileTest() {
+        val file = File(requireActivity().applicationContext.getFileStreamPath("new.csv").path)
         viewModel.sendCsvToServer(file)
     }
+
+    private fun moveToResultPage() {
+        navigator.navigate(R.id.action_navigation_home_to_matchResultFragment)
+    }
+
     private fun registerChannel() {
         Toast.makeText(requireContext(), "CSV 파일 다운로드 시작", Toast.LENGTH_LONG).show()
         CoroutineScope(Dispatchers.IO).launch {
@@ -109,11 +121,14 @@ class HomeFragment : Fragment() {
                                     )
                                         .show()
 
-                                    val sensorFile = File(requireActivity().applicationContext.getFileStreamPath("SensorData.csv").path)
+                                    val sensorFile = File(
+                                        requireActivity().applicationContext.getFileStreamPath("SensorData.csv").path
+                                    )
                                     println(sensorFile.isFile)
                                     println(sensorFile.totalSpace)
                                     viewModel.sendCsvToServer(sensorFile)
-                                    Wearable.getChannelClient(requireActivity().applicationContext).close(channel)
+                                    Wearable.getChannelClient(requireActivity().applicationContext)
+                                        .close(channel)
                                 }
                             })
 

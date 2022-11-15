@@ -1,4 +1,4 @@
-package com.example.mobile.ui.my
+package com.example.mobile.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
@@ -9,30 +9,35 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.mobile.R
 import com.example.mobile.common.Constants
-import com.example.mobile.databinding.FragmentMyBinding
+import com.example.mobile.databinding.FragmentMatchResultBinding
 import com.github.mikephil.charting.data.RadarData
 import com.github.mikephil.charting.data.RadarDataSet
 import com.github.mikephil.charting.data.RadarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 
-class MyFragment : Fragment() {
 
-    private lateinit var binding:FragmentMyBinding
+class MatchResultFragment : Fragment() {
+
+    private lateinit var binding: FragmentMatchResultBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_my, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_match_result, container, false)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRadarChart()
+        //video view에 video uri 설정 코드 추가 필요
     }
 
+
     private fun initRadarChart() {
-        val radarChart = binding.radarChartMy
+        val radarChart = binding.radarChartMatchResult
         val radaData = RadarData()
         radaData.addDataSet(getAverageDataSet())
         radaData.addDataSet(getPlayerDataSet())
@@ -89,4 +94,5 @@ class MyFragment : Fragment() {
         dataValues.add(RadarEntry(40f))
         return dataValues
     }
+
 }

@@ -4,5 +4,5 @@ import okhttp3.MultipartBody
 
 interface HomeRepository {
 
-    suspend fun uploadFile(part: MultipartBody.Part):String
+    suspend fun uploadFile(part: MultipartBody.Part): String
 }

@@ -47,7 +47,7 @@ val NetWorkModule = module {
     single<LoginDataSource> { LoginRemoteDataSource(get()) }
     single<LoginRepository> { LoginRepositoryImpl(get()) }
 
-    single<HomeApi>{
+    single<HomeApi> {
         get<Retrofit>(named("LoginRetrofit")).create(HomeApi::class.java)
     }
     single<HomeDataSource> { HomeRemoteDataSource(get()) }

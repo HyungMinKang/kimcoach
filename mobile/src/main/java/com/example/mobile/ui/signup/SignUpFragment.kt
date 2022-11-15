@@ -147,24 +147,26 @@ class SignUpFragment : Fragment() {
     private fun showDateDialog() {
         val minDate = Calendar.getInstance()
         val maxDate = Calendar.getInstance()
-        maxDate.set(2009,11,31)
-        minDate.set(1923,0,1)
+        maxDate.set(2009, 11, 31)
+        minDate.set(1923, 0, 1)
         val maxYear = maxDate.get(Calendar.YEAR)
         val maxMonth = maxDate.get(Calendar.MONTH)
         val maxDay = maxDate.get(Calendar.DAY_OF_MONTH)
-        val dialog = DatePickerDialog(requireContext(), birthDateSetListener, maxYear, maxMonth, maxDay)
-        dialog.datePicker.minDate= minDate.timeInMillis
-        dialog.datePicker.maxDate= maxDate.timeInMillis
+        val dialog =
+            DatePickerDialog(requireContext(), birthDateSetListener, maxYear, maxMonth, maxDay)
+        dialog.datePicker.minDate = minDate.timeInMillis
+        dialog.datePicker.maxDate = maxDate.timeInMillis
         dialog.show()
     }
 
 
-    private val birthDateSetListener = DatePickerDialog.OnDateSetListener() { view, year, month, dayOfMonth ->
-        val dateString = "${year}년 ${month + 1}월 ${dayOfMonth}일"
-        binding.tieSignBirthdate.setText(dateString)
-        birthDateFlag = true
-        checkInputValidation()
-    }
+    private val birthDateSetListener =
+        DatePickerDialog.OnDateSetListener() { view, year, month, dayOfMonth ->
+            val dateString = "${year}년 ${month + 1}월 ${dayOfMonth}일"
+            binding.tieSignBirthdate.setText(dateString)
+            birthDateFlag = true
+            checkInputValidation()
+        }
 
     private fun checkInputValidation(){
         if(idFlag&&passwordFlag&&passwordConfirmFlag&&nameFlag&&birthDateFlag){
