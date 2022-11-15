@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.core.content.FileProvider
@@ -21,6 +22,7 @@ import com.example.kimcoach.databinding.ActivitySensorBinding
 import com.example.kimcoach.room.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.google.android.gms.location.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,6 +34,7 @@ class SensorActivity : Activity(), SensorEventListener {
     private lateinit var dao: SensorDao
     private var accList: List<AcceleratorEntity>? = null
     private var gyroList: List<GyroEntity>? = null
+
     private var heartBeatList: List<HeartBeatEntity>? = null
     private var gpsList: List<GpsEntity>? = null
     private var gameRvList: List<GameRotationVectorEntity>? = null
@@ -43,20 +46,20 @@ class SensorActivity : Activity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         binding = ActivitySensorBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        loadingBackGroundGif()
         registerSensor()
         initDataBase()
         registerStopBtn()
     }
 
-    private fun loadingBackGroundGif(){
-        Glide.with(this).load(R.drawable.running).circleCrop().into(binding.ivSensorOnLoading)
-    }
+    private val coroutineExceptionHandler: CoroutineExceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            Log.e("Error", ": ${throwable.message}")
+        }
 
-    private fun initDataBase(){
+    private fun initDataBase() {
         db = SensorDataBase.getInstance(applicationContext)!!
         dao = db.sensorDao()
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch(coroutineExceptionHandler) {
             dao.deleteGpsTable()
             dao.deleteGyroTable()
             dao.deleteAcceleratorTable()
@@ -65,7 +68,7 @@ class SensorActivity : Activity(), SensorEventListener {
         }
     }
 
-    private fun registerMoveToUploadBtn(){
+    private fun registerMoveToUploadBtn() {
         binding.btnMoveToUpload.setOnClickListener {
             it.isEnabled = false
             moveToUpload()
@@ -90,6 +93,7 @@ class SensorActivity : Activity(), SensorEventListener {
             }
             Toast.makeText(this, getString(R.string.sensor_finish_message), LENGTH_SHORT).show()
             binding.btnStopSensor.isVisible = false
+            binding.pgSensor.isVisible = false
             binding.btnMoveToUpload.isVisible = true
             binding.btnMoveToUpload.isEnabled = true
 
@@ -97,8 +101,8 @@ class SensorActivity : Activity(), SensorEventListener {
         }
     }
 
-    private fun moveToUpload(){
-        val intent = Intent(this, UploadActivity::class.java )
+    private fun moveToUpload() {
+        val intent = Intent(this, UploadActivity::class.java)
         startActivity(intent)
     }
 
@@ -117,7 +121,11 @@ class SensorActivity : Activity(), SensorEventListener {
 
             }
         } else {
-            Toast.makeText(this, getString(R.string.sensor_file_make_fail_message), Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this,
+                getString(R.string.sensor_file_make_fail_message),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -147,30 +155,86 @@ class SensorActivity : Activity(), SensorEventListener {
 
     private fun exportSensorDataToCsv(csvFile: File) {
         csvWriter().open(csvFile, append = false) {
-            writeRow(listOf(getString(R.string.acc_table_name), getString(R.string.table_id), getString(R.string.table_time), getString(R.string.table_x), getString(R.string.table_y), getString(R.string.table_z)))
+            writeRow(
+                listOf(
+                    getString(R.string.acc_table_name),
+                    getString(R.string.table_id),
+                    getString(R.string.table_time),
+                    getString(R.string.table_x),
+                    getString(R.string.table_y),
+                    getString(R.string.table_z)
+                )
+            )
             accList?.forEachIndexed { index, acceleratorEntity ->
-                writeRow(listOf(index, acceleratorEntity.timestamp, acceleratorEntity.x, acceleratorEntity.y, acceleratorEntity.z))
+                writeRow(
+                    listOf(
+                        index,
+                        acceleratorEntity.timestamp,
+                        acceleratorEntity.x,
+                        acceleratorEntity.y,
+                        acceleratorEntity.z
+                    )
+                )
             }
 
-            writeRow(listOf(getString(R.string.gyro_table_name), getString(R.string.table_id), getString(R.string.table_time), getString(R.string.table_x), getString(R.string.table_y), getString(R.string.table_z)))
+            writeRow(
+                listOf(
+                    getString(R.string.gyro_table_name),
+                    getString(R.string.table_id),
+                    getString(R.string.table_time),
+                    getString(R.string.table_x),
+                    getString(R.string.table_y),
+                    getString(R.string.table_z)
+                )
+            )
             gyroList?.forEachIndexed { index, gyroEntity ->
                 writeRow(
                     listOf(index, gyroEntity.timestamp, gyroEntity.x, gyroEntity.y, gyroEntity.z)
                 )
             }
 
-//            writeRow(listOf(getString(R.string.heart_table_name), getString(R.string.table_id), getString(R.string.table_time), getString(R.string.heart_beat)))
-//            heartBeatList?.forEachIndexed { index, heartBeatEntity ->
-//                writeRow(listOf(index, heartBeatEntity.timestamp, heartBeatEntity.beat))
-//            }
+            writeRow(
+                listOf(
+                    getString(R.string.heart_table_name),
+                    getString(R.string.table_id),
+                    getString(R.string.table_time),
+                    getString(R.string.heart_beat)
+                )
+            )
+            heartBeatList?.forEachIndexed { index, heartBeatEntity ->
+                writeRow(listOf(index, heartBeatEntity.timestamp, heartBeatEntity.beat))
+            }
 
-            writeRow(listOf(getString(R.string.gps_table_name),  getString(R.string.table_id), getString(R.string.table_time), getString(R.string.gps_latitude), getString(R.string.gps_longitude)))
+            writeRow(
+                listOf(
+                    getString(R.string.gps_table_name),
+                    getString(R.string.table_id),
+                    getString(R.string.table_time),
+                    getString(R.string.gps_latitude),
+                    getString(R.string.gps_longitude)
+                )
+            )
             gpsList?.forEachIndexed { index, gpsEntity ->
-                writeRow(listOf(index, gpsEntity.timestamp, gpsEntity.latitude, gpsEntity.longitude)
+                writeRow(
+                    listOf(index, gpsEntity.timestamp, gpsEntity.latitude, gpsEntity.longitude)
                 )
             }
 
-            writeRow(listOf("GAME RV", getString(R.string.table_time), getString(R.string.table_x), getString(R.string.table_y), getString(R.string.table_z)))
+            writeRow(
+                listOf(
+                    "GAME RV",
+                    getString(R.string.table_time),
+                    getString(R.string.table_x),
+                    getString(R.string.table_y),
+                    getString(R.string.table_z)
+                )
+            )
+
+            gameRvList?.forEachIndexed { index, grvEntity ->
+                writeRow(
+                    listOf(index, grvEntity.timestamp, grvEntity.x, grvEntity.y, grvEntity.z)
+                )
+            }
 
         }
     }
@@ -194,44 +258,81 @@ class SensorActivity : Activity(), SensorEventListener {
                 for (location in locationResult.locations) {
                     if (location != null) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            dao.insertGps(GpsEntity(0, System.currentTimeMillis().toString(), location.latitude, location.longitude)
+                            dao.insertGps(
+                                GpsEntity(
+                                    0,
+                                    System.currentTimeMillis().toString(),
+                                    location.latitude,
+                                    location.longitude
+                                )
                             )
                         }
                     }
                 }
             }
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        );
 
     }
 
     private fun registerSensor() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         registerGps()
-        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER_UNCALIBRATED)?.also {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
+
+        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_FASTEST,
+                SensorManager.SENSOR_DELAY_FASTEST
+            )
         }
 
         sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED)?.also {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_FASTEST,
+                SensorManager.SENSOR_DELAY_FASTEST
+            )
         }
 
-        sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR)?.also{
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
+        sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR)?.also {
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_FASTEST,
+                SensorManager.SENSOR_DELAY_FASTEST
+            )
         }
 
-        /*sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)?.also {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_FASTEST, SensorManager.SENSOR_DELAY_FASTEST)
+        sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)?.also {
+            sensorManager.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_FASTEST,
+                SensorManager.SENSOR_DELAY_FASTEST
+            )
+
+
         }
-
-         */
-
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor?.type == Sensor.TYPE_GYROSCOPE) {
+        if (event?.sensor?.type == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
             CoroutineScope(Dispatchers.IO).launch {
-                dao.insertGyro(GyroEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble())
+                dao.insertGyro(
+                    GyroEntity(
+                        0,
+                        System.currentTimeMillis().toString(),
+                        event.values[0].toDouble(),
+                        event.values[1].toDouble(),
+                        event.values[2].toDouble()
+                    )
                 )
             }
         }
@@ -239,15 +340,28 @@ class SensorActivity : Activity(), SensorEventListener {
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertAccelerator(
-                    AcceleratorEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble())
+                    AcceleratorEntity(
+                        0,
+                        System.currentTimeMillis().toString(),
+                        event.values[0].toDouble(),
+                        event.values[1].toDouble(),
+                        event.values[2].toDouble()
+                    )
                 )
             }
         }
 
-        if(event?.sensor?.type == Sensor.TYPE_GAME_ROTATION_VECTOR){
+        if (event?.sensor?.type == Sensor.TYPE_GAME_ROTATION_VECTOR) {
+
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertGameRotationVector(
-                    GameRotationVectorEntity(0, System.currentTimeMillis().toString(), event.values[0].toDouble(), event.values[1].toDouble(), event.values[2].toDouble())
+                    GameRotationVectorEntity(
+                        0,
+                        System.currentTimeMillis().toString(),
+                        event.values[0].toDouble(),
+                        event.values[1].toDouble(),
+                        event.values[2].toDouble()
+                    )
                 )
             }
         }
@@ -255,7 +369,11 @@ class SensorActivity : Activity(), SensorEventListener {
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertHeartBeat(
-                    HeartBeatEntity(0, System.currentTimeMillis().toString(), event.values[0].toInt())
+                    HeartBeatEntity(
+                        0,
+                        System.currentTimeMillis().toString(),
+                        event.values[0].toInt()
+                    )
                 )
             }
         }
