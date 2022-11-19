@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.kimcoach.R
 
 
-@Database(entities = [AcceleratorEntity::class, GpsEntity::class, GyroEntity::class, HeartBeatEntity::class, GameRotationVectorEntity::class], version =2,exportSchema = true )
+@Database(entities = [AcceleratorEntity::class, GpsEntity::class, GyroEntity::class, HeartBeatEntity::class, GameRotationVectorEntity::class], version =3,exportSchema = true )
 abstract class SensorDataBase : RoomDatabase() {
     abstract fun sensorDao(): SensorDao
 

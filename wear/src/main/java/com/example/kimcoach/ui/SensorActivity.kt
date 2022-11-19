@@ -93,7 +93,7 @@ class SensorActivity : Activity(), SensorEventListener {
             }
             Toast.makeText(this, getString(R.string.sensor_finish_message), LENGTH_SHORT).show()
             binding.btnStopSensor.isVisible = false
-            binding.pgSensor.isVisible = false
+            //binding.pgSensor.isVisible = false
             binding.btnMoveToUpload.isVisible = true
             binding.btnMoveToUpload.isEnabled = true
 
@@ -133,12 +133,7 @@ class SensorActivity : Activity(), SensorEventListener {
         val csvFile = File(context.filesDir, fileName)
         csvFile.createNewFile()
 
-        return if (csvFile.exists()) {
-            csvFile.delete()
-            csvFile
-        } else {
-            null
-        }
+        return csvFile
     }
 
     private fun goToFileIntent(context: Context, file: File): Intent {
@@ -237,9 +232,11 @@ class SensorActivity : Activity(), SensorEventListener {
             }
 
         }
+
     }
 
 
+    @SuppressLint("MissingPermission")
     private fun registerGps() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         startLocationUpdates()
@@ -252,9 +249,6 @@ class SensorActivity : Activity(), SensorEventListener {
         locationRequest.interval = 2 * 1000
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                if (locationResult == null) {
-                    return
-                }
                 for (location in locationResult.locations) {
                     if (location != null) {
                         CoroutineScope(Dispatchers.IO).launch {
@@ -275,7 +269,7 @@ class SensorActivity : Activity(), SensorEventListener {
             locationRequest,
             locationCallback,
             Looper.getMainLooper()
-        );
+        )
 
     }
 
