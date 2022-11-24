@@ -14,18 +14,18 @@
     <string name="upload_move_to_home">홈으로 가기</string>
     <string name="sensor_finish_message">경기 기록 완료</string>
     <string name="sensor_file_make_fail_message">CSV 파일 생성 실패</string>
-    <string name="acc_table_name">ACC [id]</string>
-    <string name="table_time">[Time]</string>
-    <string name="table_x">[X]</string>
-    <string name="table_y">[Y]</string>
-    <string name="table_z">[Z]</string>
-    <string name="table_id">[id]</string>
+    <string name="acc_table_name">ACC</string>
+    <string name="table_time">Time</string>
+    <string name="table_x">X</string>
+    <string name="table_y">Y</string>
+    <string name="table_z">Z</string>
+    <string name="table_id">id</string>
     <string name="gyro_table_name">GYRO</string>
     <string name="heart_table_name">HeartBeat</string>
     <string name="heart_beat">Beat</string>
     <string name="gps_table_name">GPS</string>
-    <string name="gps_latitude">[Latitude]</string>
-    <string name="gps_longitude">[Longitude]</string>
+    <string name="gps_latitude">Latitude</string>
+    <string name="gps_longitude">Longitude</string>
     <string name="permission_granted_message">All Permission Granted</string>
     <string name="db_name">favorite_database</string>
 </resources>

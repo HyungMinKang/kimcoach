@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
+import android.hardware.*
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -15,17 +13,13 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import com.bumptech.glide.Glide
 import com.example.kimcoach.R
 import com.example.kimcoach.common.Constants
 import com.example.kimcoach.databinding.ActivitySensorBinding
 import com.example.kimcoach.room.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.google.android.gms.location.*
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.File
 
 class SensorActivity : Activity(), SensorEventListener {
@@ -34,7 +28,11 @@ class SensorActivity : Activity(), SensorEventListener {
     private lateinit var dao: SensorDao
     private var accList: List<AcceleratorEntity>? = null
     private var gyroList: List<GyroEntity>? = null
-
+    private var startTime = 0L
+    private var duration = 5L
+    private var accCount = 0
+    private var gyroCount = 0
+    private var vectorCount = 0
     private var heartBeatList: List<HeartBeatEntity>? = null
     private var gpsList: List<GpsEntity>? = null
     private var gameRvList: List<GameRotationVectorEntity>? = null
@@ -77,6 +75,7 @@ class SensorActivity : Activity(), SensorEventListener {
 
     private fun registerStopBtn() {
         binding.btnStopSensor.setOnClickListener {
+            sensorManager.unregisterListener(this)
             CoroutineScope(Dispatchers.IO).launch {
                 launch {
                     accList = (dao.getAllAcceleratorData())
@@ -153,7 +152,6 @@ class SensorActivity : Activity(), SensorEventListener {
             writeRow(
                 listOf(
                     getString(R.string.acc_table_name),
-                    getString(R.string.table_id),
                     getString(R.string.table_time),
                     getString(R.string.table_x),
                     getString(R.string.table_y),
@@ -173,9 +171,8 @@ class SensorActivity : Activity(), SensorEventListener {
             }
 
             writeRow(
-                listOf(
+                 listOf(
                     getString(R.string.gyro_table_name),
-                    getString(R.string.table_id),
                     getString(R.string.table_time),
                     getString(R.string.table_x),
                     getString(R.string.table_y),
@@ -190,20 +187,7 @@ class SensorActivity : Activity(), SensorEventListener {
 
             writeRow(
                 listOf(
-                    getString(R.string.heart_table_name),
-                    getString(R.string.table_id),
-                    getString(R.string.table_time),
-                    getString(R.string.heart_beat)
-                )
-            )
-            heartBeatList?.forEachIndexed { index, heartBeatEntity ->
-                writeRow(listOf(index, heartBeatEntity.timestamp, heartBeatEntity.beat))
-            }
-
-            writeRow(
-                listOf(
                     getString(R.string.gps_table_name),
-                    getString(R.string.table_id),
                     getString(R.string.table_time),
                     getString(R.string.gps_latitude),
                     getString(R.string.gps_longitude)
@@ -245,8 +229,9 @@ class SensorActivity : Activity(), SensorEventListener {
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         val locationRequest = LocationRequest.create()
-        locationRequest.priority = Priority.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 2 * 1000
+        locationRequest.priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
+        locationRequest.interval = 2
+        locationRequest.maxWaitTime = 2
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 for (location in locationResult.locations) {
@@ -276,101 +261,93 @@ class SensorActivity : Activity(), SensorEventListener {
     private fun registerSensor() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         registerGps()
+        startTime = System.currentTimeMillis()
 
+
+        //가속도 등록
         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
             sensorManager.registerListener(
                 this,
                 it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
+                5,
+                10
             )
         }
 
+        //자이로 등록
         sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED)?.also {
             sensorManager.registerListener(
+
                 this,
                 it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
+                5,
+                10
             )
         }
 
+        //RV 등록
         sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR)?.also {
             sensorManager.registerListener(
                 this,
                 it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
+                5,
+                10
             )
         }
 
-        sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)?.also {
-            sensorManager.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
-            )
-
-
-        }
     }
 
+    //센서의 값이 바뀌면 호출
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
+            val time = (startTime + duration * gyroCount).toString()
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertGyro(
                     GyroEntity(
                         0,
-                        System.currentTimeMillis().toString(),
+                        time,
                         event.values[0].toDouble(),
                         event.values[1].toDouble(),
                         event.values[2].toDouble()
                     )
                 )
             }
+            gyroCount++
         }
 
         if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
+            val time = (startTime + duration * accCount).toString()
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertAccelerator(
                     AcceleratorEntity(
                         0,
-                        System.currentTimeMillis().toString(),
+                        time,
                         event.values[0].toDouble(),
                         event.values[1].toDouble(),
                         event.values[2].toDouble()
                     )
                 )
             }
+            accCount++
         }
 
         if (event?.sensor?.type == Sensor.TYPE_GAME_ROTATION_VECTOR) {
-
+            val time = (startTime + duration * vectorCount).toString()
             CoroutineScope(Dispatchers.IO).launch {
                 dao.insertGameRotationVector(
                     GameRotationVectorEntity(
                         0,
-                        System.currentTimeMillis().toString(),
+                        time,
                         event.values[0].toDouble(),
                         event.values[1].toDouble(),
                         event.values[2].toDouble()
                     )
                 )
             }
+            vectorCount++
         }
 
-        if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
-            CoroutineScope(Dispatchers.IO).launch {
-                dao.insertHeartBeat(
-                    HeartBeatEntity(
-                        0,
-                        System.currentTimeMillis().toString(),
-                        event.values[0].toInt()
-                    )
-                )
-            }
-        }
+
     }
 
     override fun onAccuracyChanged(event: Sensor?, p1: Int) {

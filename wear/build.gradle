@@ -35,6 +35,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.wear:wear:1.2.0'
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     wearApp project(":wear")
     implementation "androidx.activity:activity-ktx:1.4.0"
@@ -50,6 +51,7 @@ dependencies {
 
     //Viewbinding
     implementation'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+    implementation "androidx.lifecycle:lifecycle-service:2.4.1"
 
     //csv library
     implementation "com.github.doyaaaaaken:kotlin-csv-jvm:0.9.0"
