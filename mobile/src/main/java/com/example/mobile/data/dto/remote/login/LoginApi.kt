@@ -4,8 +4,8 @@ import retrofit2.http.GET
 
 interface LoginApi {
     @GET
-    suspend fun getLoginAccess(): String {
-        return "OK"
+    suspend fun getLoginAccess(): Boolean {
+        return true
     }
 
 }

@@ -1,25 +1,22 @@
 package com.example.mobile.ui.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobile.domain.LoginRepository
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.example.mobile.domain.model.LogInForm
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: LoginRepository):ViewModel() {
-    private val coroutineExceptionHandler: CoroutineExceptionHandler =
-        CoroutineExceptionHandler { _, throwable ->
-            Log.e("Error", ": ${throwable.message}")
-        }
+    private val _logInFlag = MutableStateFlow<Boolean>(false)
+    val logInFlag= _logInFlag.asStateFlow()
 
-    fun loginSubmission():Boolean{
-        var res = ""
-        viewModelScope.launch(coroutineExceptionHandler) {
-
-            res = repository.loginSubmission()
+    fun loginSubmission(form: LogInForm){
+        viewModelScope.launch {
+           _logInFlag.value = repository.loginSubmission()
 
         }
-        return res=="OK"
+
    }
 }
