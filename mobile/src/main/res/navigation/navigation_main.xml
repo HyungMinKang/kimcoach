@@ -59,5 +59,23 @@
         android:id="@+id/matchResultFragment"
         android:name="com.example.mobile.ui.home.MatchResultFragment"
         android:label="fragment_match_result"
-        tools:layout="@layout/fragment_match_result" />
+        tools:layout="@layout/fragment_match_result" >
+        <action
+            android:id="@+id/action_matchResultFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_matchResultFragment_to_teamResultFragment"
+            app:destination="@id/teamResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/teamResultFragment"
+        android:name="com.example.mobile.ui.home.TeamResultFragment"
+        android:label="TeamResultFragment" >
+        <action
+            android:id="@+id/action_teamResultFragment_to_matchResultFragment"
+            app:destination="@id/matchResultFragment" />
+        <action
+            android:id="@+id/action_teamResultFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 </navigation>

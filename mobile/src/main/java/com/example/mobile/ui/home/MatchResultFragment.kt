@@ -11,6 +11,8 @@ import android.widget.MediaController
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.example.mobile.R
 import com.example.mobile.common.Constants
 import com.example.mobile.databinding.FragmentMatchResultBinding
@@ -23,6 +25,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 class MatchResultFragment : Fragment() {
 
     private lateinit var binding: FragmentMatchResultBinding
+    private lateinit var navigator: NavController
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,17 +39,35 @@ class MatchResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRadarChart()
+        navigator = Navigation.findNavController(view)
         //video view에 video uri 설정 코드 추가 필요
         loadMatchVideo("test")
-
+        registerHomeBtn()
+        registerMoveToTeamResultBtn()
 
     }
 
+    private fun registerHomeBtn(){
+        binding.btnMatchResultBackHome.setOnClickListener {
+            navigator.navigate(R.id.action_matchResultFragment_to_navigation_home)
+        }
+    }
+
+    private fun registerMoveToTeamResultBtn(){
+        binding.btnMatchResultMoveToTeamResult.setOnClickListener {
+            navigator.navigate(R.id.action_matchResultFragment_to_teamResultFragment)
+        }
+    }
 
     private fun loadMatchVideo(url:String){
         binding.vvMatchResult.setVideoURI(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
-        binding.vvMatchResult.setMediaController(MediaController(requireContext()))
-        binding.vvMatchResult.setOnPreparedListener(OnPreparedListener { //비디오 시작
+        val mediaController = MediaController(requireContext())
+        mediaController.setAnchorView(binding.vvMatchResult)
+
+        binding.vvMatchResult.setOnPreparedListener(OnPreparedListener {
+            //비디오 시작
+            binding.vvMatchResult.setMediaController(mediaController)
+            mediaController.setAnchorView(binding.vvMatchResult)
             binding.pgMatchResultVideo.isVisible = false
             binding.vvMatchResult.start()
         })
