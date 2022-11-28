@@ -1,10 +1,14 @@
 package com.example.mobile.ui.home
 
 import android.graphics.Color
+import android.media.MediaPlayer.OnPreparedListener
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.MediaController
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.mobile.R
@@ -33,8 +37,20 @@ class MatchResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initRadarChart()
         //video view에 video uri 설정 코드 추가 필요
+        loadMatchVideo("test")
+
+
     }
 
+
+    private fun loadMatchVideo(url:String){
+        binding.vvMatchResult.setVideoURI(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+        binding.vvMatchResult.setMediaController(MediaController(requireContext()))
+        binding.vvMatchResult.setOnPreparedListener(OnPreparedListener { //비디오 시작
+            binding.pgMatchResultVideo.isVisible = false
+            binding.vvMatchResult.start()
+        })
+    }
 
     private fun initRadarChart() {
         val radarChart = binding.radarChartMatchResult
@@ -95,4 +111,15 @@ class MatchResultFragment : Fragment() {
         return dataValues
     }
 
+    override fun onStop() {
+        super.onStop()
+        if( binding.vvMatchResult.isPlaying){
+            binding.vvMatchResult.pause()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.vvMatchResult.stopPlayback()
+    }
 }
