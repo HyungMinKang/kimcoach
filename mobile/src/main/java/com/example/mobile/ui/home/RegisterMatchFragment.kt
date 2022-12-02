@@ -44,7 +44,7 @@ class RegisterMatchFragment : Fragment() {
         binding.tieRegisterMatchDate.setOnClickListener {
             showDateDialog()
         }
-        setSpinner(listOf("지역선택", "인천", "서울", "경기", "부산", "대구"), SpinnerType.REGION)
+        setSpinner(listOf("지역선택", "인천", "의정부", "수원", "안양"), SpinnerType.REGION)
         registerMatch()
 
     }
@@ -56,8 +56,28 @@ class RegisterMatchFragment : Fragment() {
     }
 
     private fun loadRegionStadium(region: String) {
-        val list = listOf("경기장선택 ", "$region 1", "$region 2", "$region 3", "$region 4")
-        setSpinner(list, SpinnerType.STADIUM)
+        when (region) {
+            "인천" -> {
+                val list =
+                    listOf("경기장선택 ", "인천 더배스트 풋볼파크", "케이지풋살아레나 부평점", "현우 풋살 스타디움", "스토래지풋살 인천남동점")
+                setSpinner(list, SpinnerType.STADIUM)
+            }
+
+            "의정부" -> {
+                val list = listOf("경기장선택 ", "도봉산호원풋살장", "허니비 풋살파크", "의정부스카이풋살장", "자일 풋살장")
+                setSpinner(list, SpinnerType.STADIUM)
+            }
+            "수원" -> {
+                val list = listOf("경기장선택 ", "수원 월드컵 경기장", "에스빌드 풋살파크", "누누풋살장", "HK풋살파크")
+                setSpinner(list, SpinnerType.STADIUM)
+
+            }
+            "안양" -> {
+                val list = listOf("경기장선택 ", "비플렉스풋볼스타디움", "SNFC 야외풋살장", "안양Master풋살파크")
+                setSpinner(list, SpinnerType.STADIUM)
+            }
+        }
+
 
     }
 
@@ -98,7 +118,7 @@ class RegisterMatchFragment : Fragment() {
 
     private fun showDateDialog() {
         val minDate = Calendar.getInstance()
-        minDate.set(2022, 11, 10)
+        minDate.set(2022, 11, 29)
         val minYear = minDate.get(Calendar.YEAR)
         val minMonth = minDate.get(Calendar.MONTH)
         val minDay = minDate.get(Calendar.DAY_OF_MONTH)

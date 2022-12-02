@@ -34,6 +34,7 @@ class MyFragment : Fragment() {
     private fun initRadarChart() {
         val radarChart = binding.radarChartMy
         val radaData = RadarData()
+        radarChart.description.isEnabled = false
         radaData.addDataSet(getAverageDataSet())
         radaData.addDataSet(getPlayerDataSet())
         val labels = listOf("킥", "패스", "스피드", "뛴거리", "뛴시간", "커버리지 영역")

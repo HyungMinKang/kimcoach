@@ -41,10 +41,13 @@
         android:layout_height="wrap_content"
         android:text="@string/uploading_loading_upload"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:visibility="gone"
+        android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pg_upload" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
     <Button
         android:id="@+id/btn_move_to_home"

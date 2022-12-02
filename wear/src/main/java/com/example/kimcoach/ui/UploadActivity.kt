@@ -63,9 +63,11 @@ class UploadActivity : Activity() {
     }
 
     private fun sendCsvToMobile() {
-        showLoadingProgress()
-        CoroutineScope(Dispatchers.IO).launch {
+       showLoadingProgress()
+
+        CoroutineScope(Dispatchers.Default).launch {
             val nodes = getNodes()
+            println(nodes)
             for (node in nodes) {
                 val channelTask: Task<ChannelClient.Channel> = Wearable.getChannelClient(applicationContext).openChannel(node, CHANNEL_MSG)
                 channelTask.addOnSuccessListener { channel ->
@@ -83,7 +85,6 @@ class UploadActivity : Activity() {
 
     private fun showLoadingProgress() {
         binding.btnUploadSensor.isVisible = false
-        binding.pgUpload.isVisible = true
         binding.tvUploadLoading.isVisible = true
     }
 

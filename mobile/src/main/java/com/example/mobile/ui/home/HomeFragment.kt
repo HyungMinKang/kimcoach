@@ -60,20 +60,18 @@ class HomeFragment : Fragment() {
 
     private fun makeDummyMatchList(): List<ReservedMatch> {
         return listOf<ReservedMatch>(
-            ReservedMatch("2022-10-31", "수원"),
-            ReservedMatch("2022-10-31", "인천"),
-            ReservedMatch("2022-11-15", "안양"),
-            ReservedMatch("2022-11-31", "의정부")
+            ReservedMatch("2022-12-25", "수원"),
+            ReservedMatch("2022-12-03", "인천"),
+            ReservedMatch("2022-12-15", "안양"),
+            ReservedMatch("2022-12-18", "의정부"),
+            ReservedMatch("2022-12-29", "인천")
         )
     }
 
     private fun makeDummyCompleteList(): MutableList<CompletedMatch> {
         val items = mutableListOf<CompletedMatch>()
-        items.add(CompletedMatch("XXX", "XXXX-XX-XX", false))
-        items.add(CompletedMatch("XXX", "XXXX-XX-XX", false))
-        items.add(CompletedMatch("XXX", "XXXX-XX-XX", false))
-        items.add(CompletedMatch("XXX", "XXXX-XX-XX", true))
-        items.add(CompletedMatch("XXX", "XXXX-XX-XX", true))
+        items.add(CompletedMatch("의정부", "2022-11-20", false))
+        items.add(CompletedMatch("의정부", "2022-11-27", true))
         return items
 
     }

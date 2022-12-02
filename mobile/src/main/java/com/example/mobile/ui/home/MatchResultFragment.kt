@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import coil.api.load
 import com.example.mobile.R
 import com.example.mobile.common.Constants
 import com.example.mobile.databinding.FragmentMatchResultBinding
@@ -20,12 +21,17 @@ import com.github.mikephil.charting.data.RadarData
 import com.github.mikephil.charting.data.RadarDataSet
 import com.github.mikephil.charting.data.RadarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 
 class MatchResultFragment : Fragment() {
 
     private lateinit var binding: FragmentMatchResultBinding
     private lateinit var navigator: NavController
+    private val viewModel: MatchResultViewModel by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,9 +48,15 @@ class MatchResultFragment : Fragment() {
         navigator = Navigation.findNavController(view)
         //video view에 video uri 설정 코드 추가 필요
         loadMatchVideo("test")
+        loadHeatMap()
         registerHomeBtn()
         registerMoveToTeamResultBtn()
 
+    }
+
+
+    private fun loadHeatMap(){
+        binding.ivMatchResultHeatMap.load("http://163.239.223.177:5006/images/heatmap10.png")
     }
 
     private fun registerHomeBtn(){
@@ -60,7 +72,11 @@ class MatchResultFragment : Fragment() {
     }
 
     private fun loadMatchVideo(url:String){
-        binding.vvMatchResult.setVideoURI(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+
+
+        binding.vvMatchResult.setVideoURI(Uri.parse("http://163.239.223.177:5006/vids/player.mp4"))
+
+
         val mediaController = MediaController(requireContext())
         mediaController.setAnchorView(binding.vvMatchResult)
 
@@ -76,6 +92,8 @@ class MatchResultFragment : Fragment() {
     private fun initRadarChart() {
         val radarChart = binding.radarChartMatchResult
         val radaData = RadarData()
+        radarChart.description.isEnabled = false
+        radarChart.setBackgroundColor(Color.WHITE)
         radaData.addDataSet(getAverageDataSet())
         radaData.addDataSet(getPlayerDataSet())
         val labels = listOf("킥", "패스", "스피드", "뛴거리", "뛴시간", "커버리지 영역")
@@ -98,7 +116,6 @@ class MatchResultFragment : Fragment() {
 
     private fun getPlayerDataSet(): RadarDataSet {
         val userRadarDataSet = RadarDataSet(makeDummyDataValue(), "Player")
-
         userRadarDataSet.color = Color.rgb(129, 198, 232);
         userRadarDataSet.fillColor = Color.rgb(129, 198, 232);
         userRadarDataSet.setDrawFilled(true);

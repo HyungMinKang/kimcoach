@@ -6,14 +6,19 @@ import com.example.mobile.data.dto.remote.home.HomeRemoteDataSource
 import com.example.mobile.data.dto.remote.login.LoginApi
 import com.example.mobile.data.dto.remote.login.LoginDataSource
 import com.example.mobile.data.dto.remote.login.LoginRemoteDataSource
+import com.example.mobile.data.dto.remote.matchresult.MatchApi
+import com.example.mobile.data.dto.remote.matchresult.MatchDataSource
+import com.example.mobile.data.dto.remote.matchresult.MatchRemoteDataSource
 import com.example.mobile.data.dto.remote.repository.HomeRepositoryImpl
 import com.example.mobile.data.dto.remote.repository.LoginRepositoryImpl
+import com.example.mobile.data.dto.remote.repository.MatchRepositoryImpl
 import com.example.mobile.data.dto.remote.repository.SignUpRepositoryImpl
 import com.example.mobile.data.dto.remote.signup.SignUpApi
 import com.example.mobile.data.dto.remote.signup.SignUpDataSource
 import com.example.mobile.data.dto.remote.signup.SignUpRemoteDataSource
 import com.example.mobile.domain.HomeRepository
 import com.example.mobile.domain.LoginRepository
+import com.example.mobile.domain.MatchRepository
 import com.example.mobile.domain.SignUpRepository
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
@@ -58,4 +63,8 @@ val NetWorkModule = module {
     single<SignUpApi> {get<Retrofit>().create(SignUpApi::class.java)}
     single<SignUpDataSource> { SignUpRemoteDataSource(get())}
     single<SignUpRepository> { SignUpRepositoryImpl(get())}
+
+    single<MatchApi> { get<Retrofit>().create(MatchApi::class.java)}
+    single<MatchDataSource> { MatchRemoteDataSource(get())}
+    single<MatchRepository> { MatchRepositoryImpl(get())}
 }

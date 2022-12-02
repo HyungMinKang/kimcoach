@@ -61,7 +61,6 @@ class SensorActivity : Activity(), SensorEventListener {
             dao.deleteGpsTable()
             dao.deleteGyroTable()
             dao.deleteAcceleratorTable()
-            dao.deleteHeartBeatTable()
             dao.deleteGameRotationVectorTable()
         }
     }
@@ -80,7 +79,6 @@ class SensorActivity : Activity(), SensorEventListener {
                 launch {
                     accList = (dao.getAllAcceleratorData())
                     gyroList = dao.getAllGyroData()
-                    heartBeatList = dao.getAllHeartBeatData()
                     gpsList = dao.getAllGpsData()
                     gameRvList = dao.getAllGameRotationVector()
                 }.join()

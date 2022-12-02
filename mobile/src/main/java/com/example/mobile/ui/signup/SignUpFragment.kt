@@ -59,6 +59,7 @@ class SignUpFragment : Fragment() {
         registerPasswordConfirmInputValidation()
         registerNameInputValidation()
         registerBirthDateInputValidation()
+        registerIDInputValidation()
     }
 
     private fun registerSignUpBtn() {

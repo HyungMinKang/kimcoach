@@ -12,14 +12,17 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import coil.api.load
 import com.example.mobile.R
 import com.example.mobile.databinding.FragmentTeamResultBinding
+import org.koin.android.ext.android.inject
 
 
 class TeamResultFragment : Fragment() {
 
     private lateinit var binding:FragmentTeamResultBinding
     private lateinit var navigator:NavController
+    private val viewModel : TeamResultViewModel by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,9 +36,14 @@ class TeamResultFragment : Fragment() {
         loadMatchVideo("test")
         navigator = Navigation.findNavController(view)
         registerHomeBtn()
+        loadHeatMap()
         registerMoveToPersonResultBtn()
     }
 
+
+    private fun loadHeatMap(){
+        binding.ivMatchResultHeatMap.load("http://163.239.223.177:5006/images/heatmap_team.png")
+    }
 
     private fun registerHomeBtn(){
         binding.btnMatchResultBackHome.setOnClickListener {
@@ -50,7 +58,7 @@ class TeamResultFragment : Fragment() {
     }
 
     private fun loadMatchVideo(url:String){
-        binding.vvMatchResult.setVideoURI(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+        binding.vvMatchResult.setVideoURI(Uri.parse("http://163.239.223.177:5006/vids/team.mp4"))
         val mediaController = MediaController(requireContext())
         mediaController.setAnchorView(binding.vvMatchResult)
 

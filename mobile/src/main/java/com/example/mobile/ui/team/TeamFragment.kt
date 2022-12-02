@@ -32,12 +32,18 @@ class TeamFragment : Fragment() {
 
     fun makeDummyTeamMembers(): MutableList<TeamMember> {
         val members = mutableListOf<TeamMember>()
-        members.add(TeamMember("XXX", 21, listOf("CF, RW")))
-        members.add(TeamMember("XXX", 22, listOf("CF, RW")))
-        members.add(TeamMember("XXX", 22, listOf("CF, RW")))
-        members.add(TeamMember("XXX", 22, listOf("CF, RW")))
-        members.add(TeamMember("XXX", 22, listOf("CF, RW")))
-        members.add(TeamMember("XXX", 22, listOf("CF, RW")))
+        members.add(TeamMember("Player2", 21, listOf("CF, RW")))
+        members.add(TeamMember("Player3", 24, listOf("LW")))
+        members.add(TeamMember("Player4", 23, listOf("RW")))
+        members.add(TeamMember("Player5", 28, listOf("CAM, RM")))
+        members.add(TeamMember("Player6", 30, listOf("CAM, LM")))
+        members.add(TeamMember("Player7", 26, listOf("LM, LDM, CDM")))
+        members.add(TeamMember("Player8", 22, listOf("CB, LB")))
+        members.add(TeamMember("Player9", 23, listOf("RB, CB")))
+        members.add(TeamMember("Player10", 22, listOf("CB, RB")))
+        members.add(TeamMember("Player11", 24, listOf("GK")))
+        members.add(TeamMember("Player12", 25, listOf("GK")))
+        members.add(TeamMember("Player13", 25, listOf("CB")))
         return members
 
     }

@@ -36,7 +36,7 @@
                     android:layout_height="150dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/team_sample_logo"
+                    android:background="@drawable/ic_team_logo_foreground"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="팀명 : 안양FC "
+                    android:text="팀명 : 부평FC "
                     app:layout_constraintStart_toEndOf="@id/iv_my_team_image"
                     app:layout_constraintTop_toTopOf="@id/iv_my_team_image" />
 
@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="팀장: XXX"
+                    android:text="팀장: 강형민"
                     app:layout_constraintStart_toStartOf="@id/tv_my_team_name"
                     app:layout_constraintTop_toBottomOf="@id/tv_my_team_count" />
 
@@ -77,7 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="최근 전적: 11승 5무 8패"
+                    android:text="최근 전적: 1승 0무 1패"
                     app:layout_constraintStart_toStartOf="@id/tv_my_team_name"
                     app:layout_constraintTop_toBottomOf="@id/tv_my_team_leader" />
 
